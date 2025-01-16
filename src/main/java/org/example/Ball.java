@@ -4,9 +4,7 @@ import javafx.scene.paint.Color;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.dynamics.Force;
-import org.dyn4j.geometry.Circle;
-import org.dyn4j.geometry.Mass;
-import org.dyn4j.geometry.Vector2;
+import org.dyn4j.geometry.*;
 
 import java.util.Random;
 
@@ -20,18 +18,10 @@ public class Ball extends javafx.scene.shape.Circle implements PhysicsObjectProv
     }
 
     private void initializePhysicsObject(final float xCoordinate, final float yCoordinate) {
-        var circleShape = new Circle(App.Ball_RADIUS / (App.SCALE));
-        var fixture = new BodyFixture(circleShape);
-        fixture.setDensity(10);
-        fixture.setFriction(1);
-        fixture.setRestitution(0.5);
-
         body = new Body();
-        body.addFixture(fixture);
-        body.setMass(new Mass(new Vector2(1, 1), 2, 1));
+        body.addFixture(Geometry.createCircle(App.Ball_RADIUS / App.SCALE), 1.0, 20.0, 0.1);
+        body.setMass(MassType.NORMAL);
         body.translate(xCoordinate / App.SCALE, yCoordinate / App.SCALE);
-
-        body.setTransform(body.getTransform());
     }
 
     private void initializeJavaFXCircle(final float xCoordinate, final float yCoordinate) {
@@ -52,7 +42,6 @@ public class Ball extends javafx.scene.shape.Circle implements PhysicsObjectProv
         var t = body.getTransform();
         setTranslateX(t.getTranslationX() * App.SCALE);
         setTranslateY(t.getTranslationY() * App.SCALE);
-        setRotate(t.getRotation().toDegrees());
     }
 
     @Override

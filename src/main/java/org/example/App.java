@@ -65,8 +65,8 @@ public class App extends Application {
         mainPane.getChildren().add(floor);
 
         // Create the Balls
-        for (int i = 0; i < 15; i++) {
-            var ball = new Ball(25 + (i * 45), 400 - (10 * i));
+        for (int i = 0; i < 16; i++) {
+            var ball = new Ball(25 + (i * 37), 400 - (10 * i));
             // Add the Falling Balls to the dyn4J World
             world.addBody(ball.getPhysObj());
             // Add the Falling Balls to the list of Objects that require the update() method to be called
