@@ -47,9 +47,7 @@ public class Floor extends Rectangle implements PhysicsObjectProvider {
         var t = body.getTransform();
         setTranslateX(t.getTranslationX() * App.SCALE);
         setTranslateY(t.getTranslationY() * App.SCALE);
-        setRotate(t.getRotation().toRadians() / 0.017453292519943295);
-
-        System.out.println(this);
+        setRotate(t.getRotation().toDegrees());
     }
 
 

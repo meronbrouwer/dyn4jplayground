@@ -2,11 +2,9 @@ package org.example;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
@@ -17,16 +15,17 @@ import org.dyn4j.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class App extends Application {
 
     public static double SCENE_WIDTH = 800;
     public static double SCENE_HEIGHT = 600;
-    public static double IMAGE_WIDTH_SCREEN = 20;
+    public static double Ball_RADIUS = 20;
     /**
      * The scale 20 pixels per meter.
      */
-    public static final double SCALE = 20;
+    public static final double SCALE = 10;
 
     private List<PhysicsObjectProvider> objects = new ArrayList<>();
 
@@ -57,7 +56,7 @@ public class App extends Application {
         world.setBounds(bounds);
 
         // create the floor
-        var floor = new Floor(new Point2D(0, 0), SCENE_WIDTH, 10);
+        var floor = new Floor(new Point2D(0, 0), SCENE_WIDTH, 40);
         // Add the Floor tp the dyn4J World
         world.addBody(floor.getPhysObj());
         // Add the Floor to the list of Objects that require the update() method to be called
@@ -65,16 +64,15 @@ public class App extends Application {
         // Add the Floor to the JavaFX Pane
         mainPane.getChildren().add(floor);
 
-        // Create the Smileys
-        var img = new Image("smile.png", IMAGE_WIDTH_SCREEN, IMAGE_WIDTH_SCREEN, true, true);
-        for (int i = 0; i < 1; i++) {
-            var smiley = new Smiley(img, 400, 300);
-            // Add the Smiley tp the dyn4J World
-            world.addBody(smiley.getPhysObj());
-            // Add the Smiley to the list of Objects that require the update() method to be called
-            objects.add(smiley);
-            // Add the Floor to the JavaFX Pane
-            mainPane.getChildren().add(smiley);
+        // Create the Balls
+        for (int i = 0; i < 15; i++) {
+            var ball = new Ball(25 + (i * 45), 400 - (10 * i));
+            // Add the Falling Balls to the dyn4J World
+            world.addBody(ball.getPhysObj());
+            // Add the Falling Balls to the list of Objects that require the update() method to be called
+            objects.add(ball);
+            // Add the Falling Balls to the JavaFX Pane
+            mainPane.getChildren().add(ball);
         }
 
         // Call initial update to ensure all JavaFX Nodes are aligned with their dyn4J counterparts
@@ -86,11 +84,11 @@ public class App extends Application {
 
             @Override
             public void handle(long now) { // now is in nanoseconds
-                var delta = 1f / (1000.0f / ((now - last) / 1000000));  // seems long winded but avoids precision issues
-                world.updatev(delta);
+                var delta = now - last;
+                world.updatev(TimeUnit.MILLISECONDS.toSeconds(delta));
                 update();
 
-                last = now;
+                last = delta;
             }
 
         };
